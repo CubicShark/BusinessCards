@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+    <a th:text="${'Номер заказа: ' + request.getId()}"></a>
+    <br/>
+    <a th:text="${'Имя работника: ' + request.getWorker().getFullName()}"></a>
+    <br/>
+    <a th:text="${'Номер телефона работника:' + request.getWorker().getPhoneNumber()}"></a>
+    <br/>
+    <a th:text="${'Имя заказчика: ' + request.getCustomer().getFullName()}"></a>
+    <br/>
+    <a th:text="${'Номер телефона заказчика:' + request.getCustomer().getPhoneNumber()}"></a>
+    <br/>
+    <a th:text="${'Номер дизайн: ' + request.getDesign().getId() + ' Шрифт: ' + request.getDesign().getFont() + ' Высота символов: ' + request.getDesign().getLetterHeight()}">user</a>
+    <br/>
+    <a th:text="${'Количество визиток: ' + request.getCardsAmount()}">user</a>
+    <br/>
+    <a th:text="${'Текст на визитках: ' + request.getText()}">user</a>
+    <br/>
+    <a th:text="${'Дата начала работ: ' + request.getStartDate()}">user</a>
+    <br/>
+    <a th:text="${'Дата окончания работ: ' + request.getEndDate()}">user</a>
+
+    <form action="/requests/update">
+        <input type="hidden" name="id" th:value="${request.getId()}"/>
+        <button type="submit">Редактировать заказ</button>
+    </form>
+    <br/>
+
+<a href="/cardsMarket">На главный экран</a>
+</body>
+</html>

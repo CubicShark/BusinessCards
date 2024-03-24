@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New Request</title>
+</head>
+<body>
+
+<form th:method="POST" th:action="@{/requests/newRequest}" th:object="${request}">
+
+    <label for="cardsAmount">Введите количество визиток: </label>
+    <input type="text" th:field="*{cardsAmount}" id="cardsAmount"/>
+    <div style="color:red" th:if="${#fields.hasErrors('cardsAmount')}" th:errors="*{cardsAmount}">Error </div>
+    <br/>
+
+    <label for="text">Введите текст: </label>
+    <input type="text" th:field="*{text}" id="text"/>
+    <div style="color:red" th:if="${#fields.hasErrors('text')}" th:errors="*{text}">Error </div>
+    <br/>
+
+    <label for="startDate">Введите дату начала работ: </label>
+    <input type="text" th:field="*{startDate}" id="startDate"/>
+    <div style="color:red" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}">Error </div>
+    <br/>
+
+    <label for="startDate">Введите дату окончания работ: </label>
+    <input type="text" th:field="*{endDate}" id="endDate"/>
+    <div style="color:red" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}">Error </div>
+    <br/>
+
+    <label>
+        <select name="font">
+            <option th:each=" design : ${designs}" th:value="${design.getFont()}" th:text="${design.getFont() + ', ' +design.getLetterHeight()}">
+            </option>
+        </select>
+    </label>
+    <br/>
+    <label>
+        <select name="workerName">
+            <option th:each=" worker : ${workers}" th:value="${worker.getFullName()}" th:text="${worker.getFullName()}">
+            </option>
+        </select>
+    </label>
+    <br/>
+
+
+    <label for="customerName">Введите имя заказчика:</label>
+    <input type="text" id="customerName" name="customerName"><br>
+
+    <label for="customerPhoneNumber">Введите номер телефона заказчика:</label>
+    <input type="text" id="customerPhoneNumber" name="customerPhoneNumber"><br>
+
+
+    <br/>
+    <br/>
+    <input type="submit" value="Cоздать заказ"/>
+</form>
+<br/>
+<a href="/cardsMarket/home">Вернуться</a><br/>
+</body>
+</html>

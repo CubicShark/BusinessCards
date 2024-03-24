@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>show</title>
+</head>
+<body>
+
+<div th:each="request : ${requests}">
+    <a th:text="${'Номер заказа: ' + request.getId()}">user</a>
+    <a style="color:red" th:text="${request.getEndDate()} ? '    :Заказ в процессе выполнения' : ''"></a>
+    <form action="/requests/index">
+        <input type="hidden" name="id" th:value="${request.getId()}"/>
+        <button type="submit">Выбрать заказ</button>
+    </form>
+    <br/>
+</div>
+<form action="/requests/newRequest">
+    <button type="submit">Создать новый заказ</button>
+</form>
+<br/>
+
+<a href="/cardsMarket">На главный экран</a>
+</body>
+</html>
