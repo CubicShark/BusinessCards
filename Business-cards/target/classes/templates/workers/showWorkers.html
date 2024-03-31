@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>show</title>
+    <title>show Suppliers</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -16,7 +16,7 @@
         }
 
         a {
-            color: #337ab7;
+            color: #333;
             text-decoration: none;
         }
 
@@ -25,7 +25,7 @@
             margin: 0 auto;
         }
 
-        .request {
+        .supplier {
             background-color: #fff;
             padding: 10px;
             margin-bottom: 10px;
@@ -33,29 +33,12 @@
             border-radius: 5px;
         }
 
-        .request a {
+        .supplier a {
             font-weight: bold;
         }
 
-        .form-container {
-            margin-top: 20px;
-        }
-
-        .button {
-            background-color: #337ab7;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .button:hover {
-            background-color: #23527c;
-        }
-
-        .space-between {
-            margin-bottom: 20px;
+        .consumable {
+            margin-left: 20px;
         }
 
         .main-link {
@@ -67,18 +50,15 @@
     </style>
 </head>
 <body>
-
-<div th:each="request : ${requests}">
-    <a th:text="${'Номер заказа: ' + request.getId()}">user</a>
-    <form action="/requests/index">
-        <input type="hidden" name="id" th:value="${request.getId()}"/>
-        <button type="submit">Выбрать заказ</button>
+<div th:each="worker : ${workers}">
+    <a th:text="${'Имя работника: ' + worker.getFullName()}">user</a>  <br/>
+    <a th:text="${'Номер телефона работника: ' + worker.getPhoneNumber()}">user</a>  <br/>
+    <form th:method="DELETE" th:action="@{/workers/delete}" th:object="${worker}">
+        <input type="hidden" name="id" th:value="${worker.getId()}"/>
+        <input type="submit" value="Удалить"/>
     </form>
     <br/>
 </div>
-<form action="/requests/newRequest">
-    <button type="submit">Создать новый заказ</button>
-</form>
 <br/>
 <br/>
 <a href="/cardsMarket">Вернуться</a>

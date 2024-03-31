@@ -16,7 +16,7 @@
         }
 
         a {
-            color: #337ab7;
+            color: #333;
             text-decoration: none;
         }
 
@@ -25,7 +25,7 @@
             margin: 0 auto;
         }
 
-        .request {
+        .consumable {
             background-color: #fff;
             padding: 10px;
             margin-bottom: 10px;
@@ -33,29 +33,8 @@
             border-radius: 5px;
         }
 
-        .request a {
+        .consumable a {
             font-weight: bold;
-        }
-
-        .form-container {
-            margin-top: 20px;
-        }
-
-        .button {
-            background-color: #337ab7;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .button:hover {
-            background-color: #23527c;
-        }
-
-        .space-between {
-            margin-bottom: 20px;
         }
 
         .main-link {
@@ -67,18 +46,20 @@
     </style>
 </head>
 <body>
-
-<div th:each="request : ${requests}">
-    <a th:text="${'Номер заказа: ' + request.getId()}">user</a>
-    <form action="/requests/index">
-        <input type="hidden" name="id" th:value="${request.getId()}"/>
-        <button type="submit">Выбрать заказ</button>
-    </form>
+<a th:text="${'Период: ' + firstDate + ' - ' + secondDate}">user</a>
+<br/>
+<br/>
+<a th:text="${'Количество выполненных заказов: ' + doneRequestsNumber}">user</a>
+<br/>
+<br/>
+<div th:each="type : ${consumables}">
+    <a th:text="${'Тип расходника: ' + type.getType()}">user</a>
     <br/>
+        <a th:text="${'Израсходовано: ' + type.getSumUsed()}">user</a>
+        <br/>
+        <br/>
 </div>
-<form action="/requests/newRequest">
-    <button type="submit">Создать новый заказ</button>
-</form>
+<br/>
 <br/>
 <br/>
 <a href="/cardsMarket">Вернуться</a>

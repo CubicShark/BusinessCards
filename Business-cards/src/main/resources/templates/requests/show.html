@@ -3,12 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <title>show</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        a {
+            color: #337ab7;
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .request {
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .request a {
+            font-weight: bold;
+        }
+
+        .form-container {
+            margin-top: 20px;
+        }
+
+        .button {
+            background-color: #337ab7;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #23527c;
+        }
+
+        .space-between {
+            margin-bottom: 20px;
+        }
+
+        .main-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 
 <div th:each="request : ${requests}">
     <a th:text="${'Номер заказа: ' + request.getId()}">user</a>
-    <a style="color:red" th:text="${request.getEndDate()} ? '    :Заказ в процессе выполнения' : ''"></a>
     <form action="/requests/index">
         <input type="hidden" name="id" th:value="${request.getId()}"/>
         <button type="submit">Выбрать заказ</button>
@@ -19,7 +80,7 @@
     <button type="submit">Создать новый заказ</button>
 </form>
 <br/>
-
-<a href="/cardsMarket">На главный экран</a>
+<br/>
+<a href="/cardsMarket">Вернуться</a>
 </body>
 </html>

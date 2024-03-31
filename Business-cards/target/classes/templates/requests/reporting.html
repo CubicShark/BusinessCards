@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Reporting</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    a {
+      color: #337ab7;
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .supplier {
+      background-color: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .supplier a {
+      font-weight: bold;
+    }
+
+    .consumable {
+      margin-left: 20px;
+    }
+
+    .main-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+<form th:method="POST" th:action="@{/requests/reporting}" th:object="${request}">
+
+  <label for="startDate">Введите начальную дату: </label>
+  <input type="date" th:field="*{startDate}" id="startDate"/>
+  <div style="color:red" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}">Error </div>
+  <br/>
+  <br/>
+
+  <label for="endDate">Введите начальную дату: </label>
+  <input type="date" th:field="*{endDate}" id="endDate"/>
+  <div style="color:red" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}">Error </div>
+  <br/>
+  <br/>
+  <br/>
+  <br/>
+  <input type="submit" value="Создать отчет"/>
+</form>
+</body>
+</html>

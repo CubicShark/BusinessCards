@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>show Suppliers</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    a {
+      color: #333;
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .supplier {
+      background-color: #fff;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .supplier a {
+      font-weight: bold;
+    }
+
+    .consumable {
+      margin-left: 20px;
+    }
+
+    .main-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+<div th:each="design : ${designs}">
+  <a th:text="${'Шрифт: ' + design.getFont()}">user</a>  <br/>
+  <a th:text="${'Высота символов: ' + design.getLetterHeight()}">user</a>  <br/>
+  <form th:method="DELETE" th:action="@{/design/deleteDesign}" th:object="${design}">
+    <input type="hidden" name="id" th:value="${design.getId()}"/>
+    <input type="submit" value="Удалить"/>
+  </form>
+  <br/>
+</div>
+<br/>
+<br/>
+<a href="/cardsMarket">Вернуться</a>
+</body>
+</html>

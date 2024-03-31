@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>show Customers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f1f1;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .customer-info {
+            background-color: #fff;
+            border-radius: 4px;
+            padding: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .customer-info a {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .customer-info a:first-child {
+            font-weight: bold;
+        }
+
+        .back-link {
+            display: inline-block;
+            background-color: #f9f9f9;
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .back-link:hover {
+            background-color: #e9e9e9;
+        }
+    </style>
+</head>
+<body>
+
+<div th:each="request : ${requests}">
+    <a th:text="${'Имя заказчика: ' + request.getCustomer().getFullName()}">user</a>  <br/>
+    <a th:text="${'Номер телефона заказчика: ' + request.getCustomer().getPhoneNumber()}">user</a>  <br/>
+    <a th:text="${'Номер заказа: ' + request.getId()}">user</a>  <br/>
+    <br/>
+    <br/>
+</div>
+<br/>
+<br/>
+<a href="/cardsMarket">Вернуться</a>
+</body>
+</html>
