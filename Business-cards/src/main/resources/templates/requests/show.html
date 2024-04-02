@@ -75,7 +75,13 @@
         <button type="submit">Выбрать заказ</button>
     </form>
     <br/>
+    <form th:method="DELETE" th:action="@{/requests/delete}" th:object="${request}">
+        <input type="hidden" name="id" th:value="${request.getId()}"/>
+        <input type="submit" value="Удалить"/>
+    </form>
+    <br/>
 </div>
+<br/>
 <form action="/requests/newRequest">
     <button type="submit">Создать новый заказ</button>
 </form>

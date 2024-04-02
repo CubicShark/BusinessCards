@@ -90,10 +90,44 @@ public class RequestsService {
         return workers;
     }
 
-    //TODO спросить чо тут делать с айдишников работника
+    public List<Worker> findAvailableWorkers() {
+        List<Worker> workers = this.jdbcTemplate.query(
+                "SELECT Worker.* FROM Worker LEFT JOIN Request ON Worker.id = Request.worker_id AND Request.endDate IS NULL GROUP BY Worker.id HAVING COUNT(Request.worker_id) < 3 OR COUNT(Request.worker_id) = 0;",
+                (resultSet, rowNum) -> {
+                    Worker worker = new Worker();
+                    worker.setId(resultSet.getInt("id"));
+                    worker.setFullName(resultSet.getString("fullName"));
+                    worker.setPhoneNumber(resultSet.getString("phoneNumber"));
+                    return worker;
+                });
+        return workers;
+    }
+
+    //TODO удалять заказы и создавать архив удаленных заказов
+
+    public List<Request> findRequestsByWorkerId(int id) {
+        List<Request> requests = this.jdbcTemplate.query(
+                "SELECT Request.id FROM Request INNER JOIN Worker ON Request.worker_id=Worker.id where worker_id = ? ",
+                (resultSet, rowNum) -> {
+                    Request request = new Request();
+
+                    request.setId(resultSet.getInt("Request.id"));
+                    return request;
+                }, id);
+        return requests;
+    }
+
+    public void fillConsumablesBasketArchiveByRequestId(int id){
+        this.jdbcTemplate.update("INSERT INTO ConsumablesBasketArchive SELECT * FROM ConsumablesBasket WHERE request_id = ?", id);
+    }
+
+    public void deleteFromConsumablesBasketByRequestId(int id){
+        this.jdbcTemplate.update("DELETE FROM ConsumablesBasket WHERE request_id = ?", id);
+    }
 
     public void deleteWorkerById(int id){
-        this.jdbcTemplate.update("UPDATE Request SET worker_id=null WHERE worker_id = ?",id);
+        this.jdbcTemplate.update("INSERT INTO RequestArchive SELECT * FROM Request WHERE worker_id = ?", id);
+        this.jdbcTemplate.update("DELETE FROM Request WHERE worker_id = ?",id);
         this.jdbcTemplate.update("DELETE FROM Worker WHERE id = ?", id);
     }
 
@@ -165,6 +199,27 @@ public class RequestsService {
 
     }
 
+    public Consumable findAvailablePaperNumber(){
+        Consumable AvailablePaperAmount = jdbcTemplate.queryForObject(
+                "select amount from Consumable where type = 'Лист А4'",
+                (resultSet, rowNum) -> {
+                    Consumable newConsumable = new Consumable();
+                    newConsumable.setAmount(resultSet.getInt("amount"));
+                    return newConsumable;
+                });
+        return AvailablePaperAmount;
+    }
+
+    public Consumable findAvailablePenNumber(){
+        Consumable AvailablePenAmount = jdbcTemplate.queryForObject(
+                "select amount from Consumable where type = 'Шариковая ручка'",
+                (resultSet, rowNum) -> {
+                    Consumable newConsumable = new Consumable();
+                    newConsumable.setAmount(resultSet.getInt("amount"));
+                    return newConsumable;
+                });
+        return AvailablePenAmount;
+    }
 
     public List<Supplier> findAllConsumablesAndSuppliers() {
         List<Supplier> suppliers = this.jdbcTemplate.query(
@@ -217,6 +272,25 @@ public class RequestsService {
                 });
         return types;
     }
+
+    public void createRequestArchive(){
+        this.jdbcTemplate.execute("CREATE TABLE RequestArchive SELECT * FROM Request WHERE 1=0");
+    }
+
+    public void createConsumablesBasketArchive(){
+        this.jdbcTemplate.execute("CREATE TABLE ConsumablesBasketArchive SELECT * FROM ConsumablesBasket WHERE 1=0");
+    }
+
+    public void deleteConsumablesBasket(int id){
+
+        this.jdbcTemplate.update("DELETE FROM set endDate = ? where id = ?",java.time.LocalDate.now(),id);
+    }
+
+    public void deleteRequest(int id){
+
+        this.jdbcTemplate.update("DELETE FROM Request where id = ?",id);
+    }
+
 
 
 }

@@ -44,7 +44,7 @@ public class Request {
     @Column(name = "cardsAmount")
     private int cardsAmount;
 
-    @NotEmpty(message = "not empty")
+    @NotEmpty(message = "Текст не должен быть пустым")
     @Size(min = 1, max = 40, message = "Количество символов в тексте визитки должно быть от 1 до 40")
     @Column(name = "text")
     private String text;

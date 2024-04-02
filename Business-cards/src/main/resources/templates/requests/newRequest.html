@@ -74,6 +74,7 @@
     <input type="text" th:field="*{cardsAmount}" id="cardsAmount"/>
     <div style="color:red" th:if="${#fields.hasErrors('cardsAmount')}" th:errors="*{cardsAmount}">Error </div>
     <br/>
+    <p  class="confirmation-message" th:text="${confmessage}" ></p>
 
     <label for="text">Введите текст: </label>
     <input type="text" th:field="*{text}" id="text"/>

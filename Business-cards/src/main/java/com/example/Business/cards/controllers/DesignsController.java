@@ -27,11 +27,4 @@ public class DesignsController {
         return "designs/showDesigns";
     }
 
-    @DeleteMapping("/deleteDesign")
-    public String deleteDesign(@RequestParam(name = "id") int id){
-
-//        requestsService.deleteDesignById(id);
-
-        return "redirect:/designs/showDesigns";
-    }
 }

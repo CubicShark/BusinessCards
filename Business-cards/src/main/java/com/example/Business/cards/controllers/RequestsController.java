@@ -46,9 +46,10 @@ public class RequestsController {
     public String newRequest(Model model){
         model.addAttribute("request", new Request());
         //model.addAttribute("customer", new Customer());     TODO в модели ловить ошибку и в хиденне передавать данные нужные
-        System.out.println(LocalDate.now());
+
+
         model.addAttribute("designs", requestsService.findAllDesigns());
-        model.addAttribute("workers", requestsService.findAllWorkers());
+        model.addAttribute("workers", requestsService.findAvailableWorkers());
         return "requests/newRequest";
     }
 
@@ -61,9 +62,21 @@ public class RequestsController {
                              BindingResult bindingResult,
                              Model model){
 
+        int paperAmount = (int) Math.round(request.getCardsAmount() * 0.2);
+        int penAmount = (int) Math.round(request.getCardsAmount() * 0.1);
+
         if(bindingResult.hasErrors()) {
             model.addAttribute("designs", requestsService.findAllDesigns());
-            model.addAttribute("workers", requestsService.findAllWorkers());
+            model.addAttribute("workers", requestsService.findAvailableWorkers());
+            return "requests/newRequest";
+        }
+
+        // TODO что будет если будет несколько расходников одного типа?
+
+        if(requestsService.findAvailablePaperNumber().getAmount() < paperAmount || requestsService.findAvailablePenNumber().getAmount() < penAmount){
+            model.addAttribute("designs", requestsService.findAllDesigns());
+            model.addAttribute("workers", requestsService.findAvailableWorkers());
+            model.addAttribute("confmessage", "Недостаточно расходных материалов!");
             return "requests/newRequest";
         }
 
@@ -79,7 +92,6 @@ public class RequestsController {
         return "requests/show";
     }
 
-    // TODO OtCHETNOST
 
     @GetMapping("/reporting")
     public String Reporting(Model model) {
@@ -117,4 +129,12 @@ public class RequestsController {
         model.addAttribute("consumables",consumables);
         return "requests/showRequestsReporting";
     }
+
+    @DeleteMapping("/delete")
+    public String deleteRequest(@RequestParam(name = "id") int id){
+        requestsService.deleteFromConsumablesBasketByRequestId(id);
+        requestsService.deleteRequest(id);
+        return "redirect:/requests/show";
+    }
+
 }
