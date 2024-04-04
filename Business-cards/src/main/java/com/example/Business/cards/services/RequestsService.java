@@ -64,45 +64,6 @@ public class RequestsService {
         return requestMain;
     }
 
-    public List<Design> findAllDesigns() {
-        List<Design> designs = this.jdbcTemplate.query(
-                "SELECT * FROM Design",
-                (resultSet, rowNum) -> {
-                    Design design = new Design();
-                    design.setId(resultSet.getInt("id"));
-                    design.setFont(resultSet.getString("font"));
-                    design.setLetterHeight(resultSet.getInt("letterHeight"));
-                    return design;
-                });
-        return designs;
-    }
-
-    public List<Worker> findAllWorkers() {
-        List<Worker> workers = this.jdbcTemplate.query(
-                "SELECT * FROM Worker",
-                (resultSet, rowNum) -> {
-                    Worker worker = new Worker();
-                    worker.setId(resultSet.getInt("id"));
-                    worker.setFullName(resultSet.getString("fullName"));
-                    worker.setPhoneNumber(resultSet.getString("phoneNumber"));
-                    return worker;
-                });
-        return workers;
-    }
-
-    public List<Worker> findAvailableWorkers() {
-        List<Worker> workers = this.jdbcTemplate.query(
-                "SELECT Worker.* FROM Worker LEFT JOIN Request ON Worker.id = Request.worker_id AND Request.endDate IS NULL GROUP BY Worker.id HAVING COUNT(Request.worker_id) < 3 OR COUNT(Request.worker_id) = 0;",
-                (resultSet, rowNum) -> {
-                    Worker worker = new Worker();
-                    worker.setId(resultSet.getInt("id"));
-                    worker.setFullName(resultSet.getString("fullName"));
-                    worker.setPhoneNumber(resultSet.getString("phoneNumber"));
-                    return worker;
-                });
-        return workers;
-    }
-
     //TODO удалять заказы и создавать архив удаленных заказов
 
     public List<Request> findRequestsByWorkerId(int id) {
@@ -159,39 +120,6 @@ public class RequestsService {
         this.jdbcTemplate.update("DELETE FROM ConsumablesBasket WHERE request_id = ?", id);
     }
 
-    public void deleteWorkerById(int id){
-        this.jdbcTemplate.update("INSERT INTO RequestArchive SELECT * FROM Request WHERE worker_id = ?", id);
-        this.jdbcTemplate.update("DELETE FROM Request WHERE worker_id = ?",id);
-        this.jdbcTemplate.update("DELETE FROM Worker WHERE id = ?", id);
-    }
-
-
-
-
-    public List<Customer> findAllCustomers() {
-        List<Customer> customers = this.jdbcTemplate.query(
-                "SELECT * FROM Customer ",
-                (resultSet, rowNum) -> {
-                    Customer customer = new Customer();
-                    customer.setFullName(resultSet.getString("fullName"));
-                    customer.setPhoneNumber(resultSet.getString("phoneNumber"));
-                    customer.setId(resultSet.getInt("id"));
-                    return customer;
-                });
-        return customers;
-    }
-
-    public Customer findCustomerByFullName(String fullName) {
-        Customer customerForPhoneNumber = this.jdbcTemplate.queryForObject(
-                "SELECT phoneNumber FROM Customer where fullName = ?",
-                (resultSet, rowNum) -> {
-                    Customer customer = new Customer();
-                    customer.setPhoneNumber(resultSet.getString("phoneNumber"));
-                    return customer;
-                },fullName);
-        return customerForPhoneNumber;
-    }
-
     // TODO сделать проверку на приход существующего Заказчика
 
     public void saveRequest(String font, String workerName, String customerName, String customerPhoneNumber,Request request, boolean isCustomerExist){
@@ -246,56 +174,6 @@ public class RequestsService {
 
     }
 
-    public Consumable findAvailablePaperNumber(){
-        Consumable AvailablePaperAmount = jdbcTemplate.queryForObject(
-                "select amount from Consumable where type = 'Лист А4'",
-                (resultSet, rowNum) -> {
-                    Consumable newConsumable = new Consumable();
-                    newConsumable.setAmount(resultSet.getInt("amount"));
-                    return newConsumable;
-                });
-        return AvailablePaperAmount;
-    }
-
-    public Consumable findAvailablePenNumber(){
-        Consumable AvailablePenAmount = jdbcTemplate.queryForObject(
-                "select amount from Consumable where type = 'Шариковая ручка'",
-                (resultSet, rowNum) -> {
-                    Consumable newConsumable = new Consumable();
-                    newConsumable.setAmount(resultSet.getInt("amount"));
-                    return newConsumable;
-                });
-        return AvailablePenAmount;
-    }
-
-    public List<Supplier> findAllConsumablesAndSuppliers() {
-        List<Supplier> suppliers = this.jdbcTemplate.query(
-                "SELECT * FROM Consumable JOIN Supplier ON Consumable.supplier_id = Supplier.id",
-                (resultSet, rowNum) -> {
-                    Supplier supplier = new Supplier();
-                    supplier.setOrganizationName(resultSet.getString("organizationName"));
-                    supplier.setId(resultSet.getInt("id"));
-                    supplier.setConsumables(findAllConsumablesBySupplierId(supplier.getId()));
-
-                    return supplier;
-                });
-
-        return suppliers;
-    }
-
-    public List<Consumable> findAllConsumablesBySupplierId(int id) {
-        List<Consumable> consumables = this.jdbcTemplate.query(
-                "SELECT * FROM Consumable where supplier_id = ?",
-                (resultSet, rowNum) -> {
-                    Consumable consumable = new Consumable();
-
-                    consumable.setAmount(resultSet.getInt("amount"));
-                    consumable.setType(resultSet.getString("type"));
-                    return consumable;
-                }, id);
-        return consumables;
-    }
-
     public void endUpRequest(int id){
         this.jdbcTemplate.update("update Request set endDate = ? where id = ?",java.time.LocalDate.now(),id);
     }
@@ -309,16 +187,6 @@ public class RequestsService {
 
     }
 
-    public List<String> findConsumableTypes() {
-        List<String> types = this.jdbcTemplate.query(
-                "SELECT DISTINCT type FROM Consumable",
-                (resultSet, rowNum) -> {
-                    String type;
-                    type = (resultSet.getString("type"));
-                    return type;
-                });
-        return types;
-    }
 
     public void createRequestArchive(){
         this.jdbcTemplate.execute("CREATE TABLE RequestArchive SELECT * FROM Request WHERE 1=0");
@@ -328,13 +196,8 @@ public class RequestsService {
         this.jdbcTemplate.execute("CREATE TABLE ConsumablesBasketArchive SELECT * FROM ConsumablesBasket WHERE 1=0");
     }
 
-    public void deleteConsumablesBasket(int id){
-
-        this.jdbcTemplate.update("DELETE FROM set endDate = ? where id = ?",java.time.LocalDate.now(),id);
-    }
 
     public void deleteRequest(int id){
-
         this.jdbcTemplate.update("DELETE FROM Request where id = ?",id);
     }
 

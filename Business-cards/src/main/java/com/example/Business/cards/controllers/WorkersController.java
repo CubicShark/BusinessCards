@@ -2,6 +2,7 @@ package com.example.Business.cards.controllers;
 
 import com.example.Business.cards.models.Request;
 import com.example.Business.cards.services.RequestsService;
+import com.example.Business.cards.services.WorkersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,15 +18,17 @@ import java.util.List;
 public class WorkersController {
 
     private final RequestsService requestsService;
+    private final WorkersService workersService;
 
     @Autowired
-    public WorkersController(RequestsService requestsService) {
+    public WorkersController(RequestsService requestsService, WorkersService workersService) {
         this.requestsService = requestsService;
+        this.workersService = workersService;
     }
 
     @GetMapping("/showWorkers")
     public String showWorkers(Model model) {
-        model.addAttribute("workers",requestsService.findAllWorkers());
+        model.addAttribute("workers",workersService.findAllWorkers());
 
         return "workers/showWorkers";
     }
@@ -42,7 +45,7 @@ public class WorkersController {
             requestsService.deleteFromConsumablesBasketByRequestId(request.getId());
         }
 
-        requestsService.deleteWorkerById(id);
+        workersService.deleteWorkerById(id);
 
         return "redirect:/workers/showWorkers";
     }

@@ -1,5 +1,6 @@
 package com.example.Business.cards.controllers;
 
+import com.example.Business.cards.services.CustomersService;
 import com.example.Business.cards.services.RequestsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,15 +14,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class CustomersController {
 
     private final RequestsService requestsService;
+    private final CustomersService customersService;
 
     @Autowired
-    public CustomersController(RequestsService requestsService) {
+    public CustomersController(RequestsService requestsService, CustomersService customersService) {
         this.requestsService = requestsService;
+        this.customersService = customersService;
     }
 
     @GetMapping("/showCustomers")
     public String showCustomers(Model model) {
-        model.addAttribute("customers",requestsService.findAllCustomers());
+        model.addAttribute("customers",customersService.findAllCustomers());
 
         return "customers/showCustomers";
     }

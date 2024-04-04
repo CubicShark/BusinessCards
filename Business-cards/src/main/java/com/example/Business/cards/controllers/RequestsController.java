@@ -3,7 +3,7 @@ package com.example.Business.cards.controllers;
 import com.example.Business.cards.models.ConsumableType;
 import com.example.Business.cards.models.Customer;
 import com.example.Business.cards.models.Request;
-import com.example.Business.cards.services.RequestsService;
+import com.example.Business.cards.services.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,10 +23,18 @@ import java.util.List;
 public class RequestsController {
 
     private final RequestsService requestsService;
+    private final CustomersService customersService;
+    private final DesignsService designsService;
+    private final WorkersService workersService;
+    private final ConsumablesService consumablesService;
 
     @Autowired
-    public RequestsController(RequestsService requestsService) {
+    public RequestsController(RequestsService requestsService, CustomersService customersService, DesignsService designsService, WorkersService workersService, ConsumablesService consumablesService) {
         this.requestsService = requestsService;
+        this.customersService = customersService;
+        this.designsService = designsService;
+        this.workersService = workersService;
+        this.consumablesService = consumablesService;
     }
 
     @GetMapping("/show")
@@ -47,9 +55,9 @@ public class RequestsController {
         model.addAttribute("request", new Request());
         //model.addAttribute("customer", new Customer());     TODO в модели ловить ошибку и в хиденне передавать данные нужные
 
-        model.addAttribute("customers", requestsService.findAllCustomers());
-        model.addAttribute("designs", requestsService.findAllDesigns());
-        model.addAttribute("workers", requestsService.findAvailableWorkers());
+        model.addAttribute("customers", customersService.findAllCustomers());
+        model.addAttribute("designs", designsService.findAllDesigns());
+        model.addAttribute("workers", workersService.findAvailableWorkers());
         return "requests/newRequest";
     }
 
@@ -68,7 +76,7 @@ public class RequestsController {
 
         if(customerPhoneNumber.isEmpty()){
             customerName = customerName.substring(0, customerName.length() - 1);
-            customerPhoneNumber = requestsService.findCustomerByFullName(customerName).getPhoneNumber();
+            customerPhoneNumber = customersService.findCustomerByFullName(customerName).getPhoneNumber();
             isCustomerExist = true;
         }else {
             customerName = customerName.substring(1);
@@ -76,18 +84,18 @@ public class RequestsController {
         }
 
         if(bindingResult.hasErrors()) {
-            model.addAttribute("designs", requestsService.findAllDesigns());
-            model.addAttribute("workers", requestsService.findAvailableWorkers());
-            model.addAttribute("customers", requestsService.findAllCustomers());
+            model.addAttribute("designs", designsService.findAllDesigns());
+            model.addAttribute("workers", workersService.findAvailableWorkers());
+            model.addAttribute("customers", customersService.findAllCustomers());
             return "requests/newRequest";
         }
 
         // TODO что будет если будет несколько расходников одного типа?
 
-        if(requestsService.findAvailablePaperNumber().getAmount() < paperAmount || requestsService.findAvailablePenNumber().getAmount() < penAmount){
-            model.addAttribute("designs", requestsService.findAllDesigns());
-            model.addAttribute("workers", requestsService.findAvailableWorkers());
-            model.addAttribute("customers", requestsService.findAllCustomers());
+        if(consumablesService.findAvailablePaperNumber().getAmount() < paperAmount || consumablesService.findAvailablePenNumber().getAmount() < penAmount){
+            model.addAttribute("designs", designsService.findAllDesigns());
+            model.addAttribute("workers", workersService.findAvailableWorkers());
+            model.addAttribute("customers", customersService.findAllCustomers());
             model.addAttribute("confmessage", "Недостаточно расходных материалов!");
             return "requests/newRequest";
         }
@@ -129,7 +137,7 @@ public class RequestsController {
 
         List<ConsumableType> consumables = new ArrayList<>();
 
-        List<String> types = requestsService.findConsumableTypes();
+        List<String> types = consumablesService.findConsumableTypes();
 
         for (String type : types) {
             consumables.add(new ConsumableType(type, requestsService.findUsedConsumablesSum(firstDate, secondDate, type)));
