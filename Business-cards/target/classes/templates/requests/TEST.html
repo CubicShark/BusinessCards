@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Выбор или ввод клиента</title>
+</head>
+<body>
+<h1>Выбор или ввод клиента</h1>
+
+<label for="customerSelect">Выберите клиента:</label>
+<select id="customerSelect" onchange="selectCustomer()">
+  <option value="">-- Выберите --</option>
+  <option value="customer1">Клиент 1</option>
+  <option value="customer2">Клиент 2</option>
+  <option value="customer3">Клиент 3</option>
+</select>
+
+<!--<div id="customerInput">-->
+<!--  <h2>Введите данные клиента:</h2>-->
+<!--  <label for="nameInput">Имя:</label>-->
+<!--  <input type="text" id="nameInput" placeholder="Введите имя">-->
+
+<!--  <label for="emailInput">Email:</label>-->
+<!--  <input type="email" id="emailInput" placeholder="Введите email">-->
+
+<!--  <label for="phoneInput">Телефон:</label>-->
+<!--  <input type="tel" id="phoneInput" placeholder="Введите телефон">-->
+<!--</div>-->
+
+<script>
+  function selectCustomer() {
+    var customerSelect = document.getElementById("customerSelect");
+    var customerInput = document.getElementById("customerInput");
+
+    if (customerSelect.value === "") {
+      customerInput.style.display = "block";
+    } else {
+      customerInput.style.display = "none";
+    }
+  }
+</script>
+</body>
+</html>

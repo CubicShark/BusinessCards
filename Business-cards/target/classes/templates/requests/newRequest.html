@@ -99,14 +99,25 @@
     </label>
     <br/>
 
+    <label for="customerName">Выберите заказчика:</label>
+        <select id="customerSelect" name="customerName" onchange="selectCustomer()">
+            <option value="">-- Выберите --</option>
+            <option th:each=" customer : ${customers}" th:value="${customer.getFullName()}" th:text="${customer.getFullName()}">
+            </option>
+        </select>
+    </label>
+    <br/>
+    <br/>
 
+
+    <div id="customerInput">
     <label for="customerName">Введите имя заказчика:</label>
     <input type="text" id="customerName" name="customerName"><br>
 
 
     <label for="customerPhoneNumber">Введите номер телефона заказчика:</label>
     <input type="text" id="customerPhoneNumber" name="customerPhoneNumber"><br>
-
+    </div>
 
     <br/>
     <br/>
@@ -115,5 +126,18 @@
 <br/>
 <br/>
 <a href="/cardsMarket">Вернуться</a><br/>
+
+<script>
+    function selectCustomer() {
+        var customerSelect = document.getElementById("customerSelect");
+        var customerInput = document.getElementById("customerInput");
+
+        if (customerSelect.value === "") {
+            customerInput.style.display = "block";
+        } else {
+            customerInput.style.display = "none";
+        }
+    }
+</script>
 </body>
 </html>

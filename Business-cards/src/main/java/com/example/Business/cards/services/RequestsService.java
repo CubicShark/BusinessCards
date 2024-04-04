@@ -117,6 +117,40 @@ public class RequestsService {
         return requests;
     }
 
+    public List<Request> findRequestsByCustomerId(int id) {
+        List<Request> requests = this.jdbcTemplate.query(
+                "SELECT * FROM Request INNER JOIN Customer ON Request.customer_id=Customer.id INNER JOIN Worker ON Request.worker_id=Worker.id INNER JOIN Design ON Request.design_id=Design.id WHERE Customer.id = ?",
+                (resultSet, rowNum) -> {
+                    Request request = new Request();
+                    Customer customer = new Customer();
+                    Worker worker = new Worker();
+                    Design design = new Design();
+
+                    request.setId(resultSet.getInt("Request.id"));
+                    request.setCardsAmount(resultSet.getInt("Request.cardsAmount"));
+                    request.setText(resultSet.getString("Request.text"));
+                    request.setStartDate(resultSet.getDate("Request.startDate"));
+                    request.setEndDate(resultSet.getDate("Request.endDate"));
+
+                    customer.setFullName(resultSet.getString("Customer.fullName"));
+                    customer.setPhoneNumber(resultSet.getString("Customer.phoneNumber"));
+                    request.setCustomer(customer);
+
+                    worker.setFullName(resultSet.getString("Worker.fullName"));
+                    worker.setPhoneNumber(resultSet.getString("Worker.phoneNumber"));
+                    request.setWorker(worker);
+
+                    design.setId(resultSet.getInt("Design.id"));
+                    design.setFont(resultSet.getString("Design.font"));
+                    design.setLetterHeight(resultSet.getInt("Design.letterHeight"));
+                    request.setDesign(design);
+                    return request;
+                }, id);
+        return requests;
+    }
+
+
+
     public void fillConsumablesBasketArchiveByRequestId(int id){
         this.jdbcTemplate.update("INSERT INTO ConsumablesBasketArchive SELECT * FROM ConsumablesBasket WHERE request_id = ?", id);
     }
@@ -134,24 +168,37 @@ public class RequestsService {
 
 
 
-    public List<Request> findAllRequestsIdAndTheirCustomers() {
-        List<Request> requests = this.jdbcTemplate.query(
-                "SELECT Request.id, fullName, phoneNumber FROM Request INNER JOIN Customer ON Request.customer_id=Customer.id",
+    public List<Customer> findAllCustomers() {
+        List<Customer> customers = this.jdbcTemplate.query(
+                "SELECT * FROM Customer ",
                 (resultSet, rowNum) -> {
-                    Request request = new Request();
                     Customer customer = new Customer();
                     customer.setFullName(resultSet.getString("fullName"));
                     customer.setPhoneNumber(resultSet.getString("phoneNumber"));
-                    request.setId(resultSet.getInt("Request.id"));
-                    request.setCustomer(customer);
-                    return request;
+                    customer.setId(resultSet.getInt("id"));
+                    return customer;
                 });
-        return requests;
+        return customers;
     }
 
+    public Customer findCustomerByFullName(String fullName) {
+        Customer customerForPhoneNumber = this.jdbcTemplate.queryForObject(
+                "SELECT phoneNumber FROM Customer where fullName = ?",
+                (resultSet, rowNum) -> {
+                    Customer customer = new Customer();
+                    customer.setPhoneNumber(resultSet.getString("phoneNumber"));
+                    return customer;
+                },fullName);
+        return customerForPhoneNumber;
+    }
 
-    public void saveRequest(String font, String workerName, String customerName, String customerPhoneNumber,Request request){
+    // TODO сделать проверку на приход существующего Заказчика
+
+    public void saveRequest(String font, String workerName, String customerName, String customerPhoneNumber,Request request, boolean isCustomerExist){
+        if (!isCustomerExist){
         this.jdbcTemplate.update("INSERT INTO Customer (fullName,phoneNumber) values (?,?)",customerName,customerPhoneNumber);
+        }
+
         this.jdbcTemplate.update("INSERT INTO Request (customer_id, design_id, worker_id, cardsAmount, text, startDate, endDate)\n" +
                                         "SELECT\n" +
                                         "    (SELECT id FROM Customer WHERE fullName = ?),\n" +

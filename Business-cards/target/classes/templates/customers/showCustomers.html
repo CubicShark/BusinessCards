@@ -45,10 +45,13 @@
 </head>
 <body>
 
-<div th:each="request : ${requests}">
-    <a th:text="${'Имя заказчика: ' + request.getCustomer().getFullName()}">user</a>  <br/>
-    <a th:text="${'Номер телефона заказчика: ' + request.getCustomer().getPhoneNumber()}">user</a>  <br/>
-    <a th:text="${'Номер заказа: ' + request.getId()}">user</a>  <br/>
+<div th:each="customer : ${customers}">
+    <a th:text="${'Имя заказчика: ' + customer.getFullName()}">user</a>  <br/>
+    <a th:text="${'Номер телефона заказчика: ' + customer.getPhoneNumber()}">user</a>  <br/>
+    <form action="/customers/showCustomerRequests">
+        <input type="hidden" name="id" th:value="${customer.getId()}"/>
+        <button type="submit">Просмотреть заказы</button>
+    </form>
     <br/>
     <br/>
 </div>

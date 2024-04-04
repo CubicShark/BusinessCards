@@ -47,7 +47,7 @@ public class RequestsController {
         model.addAttribute("request", new Request());
         //model.addAttribute("customer", new Customer());     TODO в модели ловить ошибку и в хиденне передавать данные нужные
 
-
+        model.addAttribute("customers", requestsService.findAllCustomers());
         model.addAttribute("designs", requestsService.findAllDesigns());
         model.addAttribute("workers", requestsService.findAvailableWorkers());
         return "requests/newRequest";
@@ -64,10 +64,21 @@ public class RequestsController {
 
         int paperAmount = (int) Math.round(request.getCardsAmount() * 0.2);
         int penAmount = (int) Math.round(request.getCardsAmount() * 0.1);
+        boolean isCustomerExist;
+
+        if(customerPhoneNumber.isEmpty()){
+            customerName = customerName.substring(0, customerName.length() - 1);
+            customerPhoneNumber = requestsService.findCustomerByFullName(customerName).getPhoneNumber();
+            isCustomerExist = true;
+        }else {
+            customerName = customerName.substring(1);
+            isCustomerExist = false;
+        }
 
         if(bindingResult.hasErrors()) {
             model.addAttribute("designs", requestsService.findAllDesigns());
             model.addAttribute("workers", requestsService.findAvailableWorkers());
+            model.addAttribute("customers", requestsService.findAllCustomers());
             return "requests/newRequest";
         }
 
@@ -76,11 +87,12 @@ public class RequestsController {
         if(requestsService.findAvailablePaperNumber().getAmount() < paperAmount || requestsService.findAvailablePenNumber().getAmount() < penAmount){
             model.addAttribute("designs", requestsService.findAllDesigns());
             model.addAttribute("workers", requestsService.findAvailableWorkers());
+            model.addAttribute("customers", requestsService.findAllCustomers());
             model.addAttribute("confmessage", "Недостаточно расходных материалов!");
             return "requests/newRequest";
         }
 
-        requestsService.saveRequest(font, workerName, customerName, customerPhoneNumber, request);
+        requestsService.saveRequest(font, workerName, customerName, customerPhoneNumber, request, isCustomerExist);
 
         return "redirect:/requests/show";
     }

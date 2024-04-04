@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>show</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        a {
+            color: #337ab7;
+            text-decoration: none;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .request {
+            background-color: #fff;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .request a {
+            font-weight: bold;
+        }
+
+        .form-container {
+            margin-top: 20px;
+        }
+
+        .button {
+            background-color: #337ab7;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #23527c;
+        }
+
+        .space-between {
+            margin-bottom: 20px;
+        }
+
+        .main-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div th:each="request : ${requests}">
+    <a th:text="${'Номер заказа: ' + request.getId()}"></a>
+    <br/>
+    <a th:text="${'Имя работника: ' + request.getWorker().getFullName()}"></a>
+    <br/>
+    <a th:text="${'Номер телефона работника:' + request.getWorker().getPhoneNumber()}"></a>
+    <br/>
+    <a th:text="${'Имя заказчика: ' + request.getCustomer().getFullName()}"></a>
+    <br/>
+    <a th:text="${'Номер телефона заказчика:' + request.getCustomer().getPhoneNumber()}"></a>
+    <br/>
+    <a th:text="${'Номер дизайн: ' + request.getDesign().getId() + ' Шрифт: ' + request.getDesign().getFont() + ' Высота символов: ' + request.getDesign().getLetterHeight()}">user</a>
+    <br/>
+    <a th:text="${'Количество визиток: ' + request.getCardsAmount()}">user</a>
+    <br/>
+    <a th:text="${'Текст на визитках: ' + request.getText()}">user</a>
+    <br/>
+    <a th:text="${'Дата начала работ: ' + request.getStartDate()}">user</a>
+    <br/>
+    <a th:text="${'Дата окончания работ: ' + request.getEndDate()}">user</a>
+    <br/>
+    <br/>
+</div>
+<br/>
+<br/>
+<br/>
+<a href="/cardsMarket">Вернуться</a>
+</body>
+</html>
