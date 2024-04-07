@@ -15,6 +15,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,7 +70,8 @@ public class RequestsController {
                              @RequestParam(name = "customerPhoneNumber") String customerPhoneNumber,
                              @ModelAttribute("request") @Valid Request request,
                              BindingResult bindingResult,
-                             Model model){
+                             Model model,
+                             RedirectAttributes redirectAttributes){
 
         int paperAmount = (int) Math.round(request.getCardsAmount() * 0.2);
         int penAmount = (int) Math.round(request.getCardsAmount() * 0.1);
@@ -90,8 +93,6 @@ public class RequestsController {
             return "requests/newRequest";
         }
 
-        // TODO что будет если будет несколько расходников одного типа?
-
         if(consumablesService.findAvailablePaperNumber().getAmount() < paperAmount || consumablesService.findAvailablePenNumber().getAmount() < penAmount){
             model.addAttribute("designs", designsService.findAllDesigns());
             model.addAttribute("workers", workersService.findAvailableWorkers());
@@ -102,7 +103,33 @@ public class RequestsController {
 
         requestsService.saveRequest(font, workerName, customerName, customerPhoneNumber, request, isCustomerExist);
 
-        return "redirect:/requests/show";
+
+        redirectAttributes.addAttribute("workerName", workerName);
+        redirectAttributes.addAttribute("customerName", customerName);
+        redirectAttributes.addAttribute("cardsAmount", request.getCardsAmount());
+        return "redirect:/requests/check";
+    }
+
+    @GetMapping("/check")
+    public String check(@RequestParam(name = "workerName") String workerName,
+                        @RequestParam(name = "customerName") String customerName,
+                        @RequestParam(name = "cardsAmount") int cardsAmount,
+                        Model model) {
+
+        LocalDateTime dateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss");
+        String dateString = dateTime.format(formatter);
+        List<Request> req = requestsService.findNotEndedRequestsId();
+        double price = cardsAmount*0.3;
+
+        model.addAttribute("startDate", dateString);
+        model.addAttribute("workerName", workerName);
+        model.addAttribute("customerName", customerName);
+        model.addAttribute("cardsAmount", cardsAmount);
+        model.addAttribute("price", price);
+        model.addAttribute("reqNum", req.get(req.size()-1).getId());
+
+        return "requests/check";
     }
 
     @GetMapping("/endUp")

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Кассовый чек</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    h2, h3 {
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 8px;
+      border: 1px solid #ccc;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    tr:hover {
+      background-color: #e3e3e3;
+    }
+
+    strong {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<meta charset="UTF-8">
+<body>
+<h2>ООО «ВИЗИТКИ»</h2>
+<p>119635, г. Минск, ул. Попутная, д. 20, стр. 1 </p>
+<p>ИНН: 7725121212 СНО: ОСН</p>
+<a>Смена :</a><a  class="confirmation-message" th:text="${startDate}" ></a>
+<p class="confirmation-message" th:text="${'Чек № : ' + reqNum}" > </p>
+<a>Работник: </a><a  class="confirmation-message" th:text="${workerName}" ></a><br/><br/>
+<a>Покупатель: </a><a  class="confirmation-message" th:text="${customerName}" ></a>
+<h3>КАССОВЫЙ ЧЕК / ПРИХОД</h3>
+<table>
+  <tr>
+    <th>ПОЛНЫЙ РАСЧЕТ</th>
+    <th> </th>
+  </tr>
+  <tr>
+    <td>УСЛУГА</td>
+    <td>Изготовление визиток</td>
+  </tr>
+  <tr>
+    <td>Количество визиток</td>
+    <td class="confirmation-message" th:text="${cardsAmount}"> </td>
+  </tr>
+  <tr>
+    <td>НДС 20%</td>
+  </tr>
+  <tr>
+    <td><strong>ИТОГ</strong></td>
+    <td class="confirmation-message" th:text="${price + '$'}"><strong> </strong></td>
+  </tr>
+</table>
+<br/>
+<br/>
+<br/>
+<a href="/cardsMarket">Вернуться</a><br/>
+</body>
+</html>
