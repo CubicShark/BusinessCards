@@ -157,4 +157,10 @@ public class RequestsController {
         return "redirect:/requests/show";
     }
 
+//    @GetMapping("/showAllRequests")
+//    public String showAllRequests(Model model){
+//        model.addAttribute("requests",requestsService.findNotEndedRequestsId());
+//        return "requests/showAllRequests";
+//    }
+
 }

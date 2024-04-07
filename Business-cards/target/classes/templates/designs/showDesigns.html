@@ -55,7 +55,15 @@
   <a th:text="${'Шрифт: ' + design.getFont()}">user</a>  <br/>
   <a th:text="${'Высота символов: ' + design.getLetterHeight()}">user</a>  <br/>
   <br/>
+  <form action="/designs/updateDesign">
+    <input type="hidden" name="id" th:value="${design.getId()}"/>
+    <input type="submit" value="Редактировать"/>
+  </form>
+  <br/>
+  <br/>
 </div>
+<br/>
+<a href="/designs/newDesign">Добавить новый дизайн</a>
 <br/>
 <br/>
 <a href="/cardsMarket">Вернуться</a>

@@ -110,8 +110,6 @@ public class RequestsService {
         return requests;
     }
 
-
-
     public void fillConsumablesBasketArchiveByRequestId(int id){
         this.jdbcTemplate.update("INSERT INTO ConsumablesBasketArchive SELECT * FROM ConsumablesBasket WHERE request_id = ?", id);
     }
@@ -119,8 +117,6 @@ public class RequestsService {
     public void deleteFromConsumablesBasketByRequestId(int id){
         this.jdbcTemplate.update("DELETE FROM ConsumablesBasket WHERE request_id = ?", id);
     }
-
-    // TODO сделать проверку на приход существующего Заказчика
 
     public void saveRequest(String font, String workerName, String customerName, String customerPhoneNumber,Request request, boolean isCustomerExist){
         if (!isCustomerExist){
@@ -140,37 +136,39 @@ public class RequestsService {
         int paperAmount = (int) Math.round(request.getCardsAmount() * 0.2);
         int penAmount = (int) Math.round(request.getCardsAmount() * 0.1);
 
-        this.jdbcTemplate.update("INSERT INTO ConsumablesBasket (consumable_id, request_id, amountInRequest)\n" +
-                "SELECT\n" +
-                "    (SELECT id FROM Consumable WHERE type = 'Лист А4' AND amount >= ?),\n" +
-                "    (SELECT id FROM Request WHERE text = ?),\n" +
-                "    ?", paperAmount,request.getText(),paperAmount);
-
-        Consumable consumableForPaperAmount = jdbcTemplate.queryForObject(
-                "select amount from Consumable where type = 'Лист А4'",
+        List<Consumable> consumablesForPaperAmountAndId = jdbcTemplate.query(
+                "select amount,id from Consumable where type = 'Лист А4' and amount >= ? ",
                 (resultSet, rowNum) -> {
                     Consumable newConsumable = new Consumable();
                     newConsumable.setAmount(resultSet.getInt("amount"));
+                    newConsumable.setId(resultSet.getInt("id"));
                     return newConsumable;
-                });
-
-        this.jdbcTemplate.update("UPDATE Consumable set amount = ? where type = 'Лист А4'",consumableForPaperAmount.getAmount()-paperAmount);
+                },paperAmount);
 
         this.jdbcTemplate.update("INSERT INTO ConsumablesBasket (consumable_id, request_id, amountInRequest)\n" +
                 "SELECT\n" +
-                "    (SELECT id FROM Consumable WHERE type = 'Шариковая ручка' AND amount >= ?),\n" +
+                "    ?,\n" +
                 "    (SELECT id FROM Request WHERE text = ?),\n" +
-                "    ?", penAmount,request.getText(),penAmount);
+                "    ?", consumablesForPaperAmountAndId.get(0).getId(),request.getText(),paperAmount);
 
-        Consumable consumableForPenAmount = jdbcTemplate.queryForObject(
-                "select amount from Consumable where type = 'Шариковая ручка'",
+        this.jdbcTemplate.update("UPDATE Consumable set amount = ? where id = ?",consumablesForPaperAmountAndId.get(0).getAmount()-paperAmount,consumablesForPaperAmountAndId.get(0).getId());
+
+        List<Consumable> consumableForPenAmountAndId = jdbcTemplate.query(
+                "select amount,id from Consumable where type = 'Шариковая ручка' and amount >= ?",
                 (resultSet, rowNum) -> {
                     Consumable newConsumable = new Consumable();
                     newConsumable.setAmount(resultSet.getInt("amount"));
+                    newConsumable.setId(resultSet.getInt("id"));
                     return newConsumable;
-                });
+                },penAmount);
 
-        this.jdbcTemplate.update("UPDATE Consumable set amount = ? where type = 'Шариковая ручка'",consumableForPenAmount.getAmount()-penAmount);
+        this.jdbcTemplate.update("INSERT INTO ConsumablesBasket (consumable_id, request_id, amountInRequest)\n" +
+                "SELECT\n" +
+                "    ?,\n" +
+                "    (SELECT id FROM Request WHERE text = ?),\n" +
+                "    ?",consumableForPenAmountAndId.get(0).getId(),request.getText(),penAmount);
+
+        this.jdbcTemplate.update("UPDATE Consumable set amount = ? where id = ?",consumableForPenAmountAndId.get(0).getAmount()-penAmount,consumableForPenAmountAndId.get(0).getId());
 
     }
 
@@ -179,7 +177,7 @@ public class RequestsService {
     }
 
     public int findDoneRequestsNumber(Date firstDate, Date secondDate) {
-        return this.jdbcTemplate.queryForObject("SELECT COUNT(id)  FROM Request where startDate >= ? and endDate <= ? and endDate is not null", Integer.class,firstDate,secondDate);
+        return this.jdbcTemplate.queryForObject("SELECT SUM(totalCount) FROM (SELECT COUNT(id) as totalCount FROM Request where startDate >= ? and endDate <= ? and endDate is not null UNION ALL SELECT COUNT(id) as totalCount FROM RequestArchive where startDate >= ? and endDate <= ? and endDate is not null) AS subquery", Integer.class,firstDate,secondDate,firstDate,secondDate);
     }
 
     public int findUsedConsumablesSum(Date firstDate, Date secondDate, String consumableType) {
@@ -200,6 +198,8 @@ public class RequestsService {
     public void deleteRequest(int id){
         this.jdbcTemplate.update("DELETE FROM Request where id = ?",id);
     }
+
+
 
 
 

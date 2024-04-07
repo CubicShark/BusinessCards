@@ -47,4 +47,12 @@ public class WorkersService {
         this.jdbcTemplate.update("DELETE FROM Request WHERE worker_id = ?",id);
         this.jdbcTemplate.update("DELETE FROM Worker WHERE id = ?", id);
     }
+
+    public void save(Worker worker){
+        this.jdbcTemplate.update("INSERT INTO Worker (fullName, phoneNumber) values (?,?)",worker.getFullName(),worker.getPhoneNumber());
+    }
+
+    public void update(Worker worker, int id){
+        this.jdbcTemplate.update("UPDATE Worker SET fullName = ?, phoneNumber = ? where id = ?",worker.getFullName(),worker.getPhoneNumber(),id);
+    }
 }

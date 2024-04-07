@@ -22,6 +22,7 @@ public class Design {
     private int id;
 
 
+    @NotEmpty
     @Column(name = "font")
     private String font;
 

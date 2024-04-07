@@ -58,7 +58,16 @@
         <input type="submit" value="Удалить"/>
     </form>
     <br/>
+    <form action="/workers/updateWorker">
+        <input type="hidden" name="id" th:value="${worker.getId()}"/>
+        <input type="submit" value="Редактировать"/>
+    </form>
+    <br/>
+    <br/>
 </div>
+<br/>
+<a href="/workers/newWorker">Добавить нового работника</a>
+<br/>
 <br/>
 <br/>
 <a href="/cardsMarket">Вернуться</a>

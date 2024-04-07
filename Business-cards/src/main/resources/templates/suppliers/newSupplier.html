@@ -68,20 +68,29 @@
 </head>
 <body>
 
-<form th:method="POST" th:action="@{/workers/newWorker}" th:object="${worker}">
+<form th:method="POST" th:action="@{/suppliers/newSupplier}" th:object="${supplier}">
 
-  <label for="fullName">Введите имя: </label>
-  <input type="text" th:field="*{fullName}" id="fullName"/>
-  <div style="color:red" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}">Error </div>
-  <br/>
-
-  <label for="phoneNumber">Введите номер телефона: </label>
-  <input type="text" th:field="*{phoneNumber}" id="phoneNumber"/>
-  <div style="color:red" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}">Error </div>
+  <label for="organizationName">Введите имя организации: </label>
+  <input type="text" th:field="*{organizationName}" id="organizationName"/>
+  <div style="color:red" th:if="${#fields.hasErrors('organizationName')}" th:errors="*{organizationName}">Error </div>
   <br/>
   <br/>
+  <a>Выберите тип расходника :</a>
+  <label>
+    <select name="consumableType">
+      <option th:each=" type : ${consumableTypes}" th:value="${type}" th:text="${type}">
+      </option>
+    </select>
+  </label>
   <br/>
-  <input type="submit" value="Cоздать работника"/>
+  <br/>
+    <label for="amount">Введите количество расходных материалов:</label>
+      <input type="text" id="amount" name="amount"><br>
+    </div>
+  <p  class="confirmation-message" th:text="${confmessage}" ></p>
+  <br/>
+  <br/>
+  <input type="submit" value="Cоздать поставщика"/>
 </form>
 <br/>
 <br/>

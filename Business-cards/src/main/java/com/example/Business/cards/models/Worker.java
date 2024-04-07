@@ -30,6 +30,7 @@ public class Worker {
 
 
     @Pattern(regexp="^\\+[0-9]{12}$", message="Некорректный формат номера телефона")
+    @NotEmpty(message = "Номер телефона не должен быть пустым")
     @Column(name = "phoneNumber")
     private String phoneNumber;
 

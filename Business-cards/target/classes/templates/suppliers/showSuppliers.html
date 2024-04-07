@@ -57,8 +57,15 @@
     <a th:text="${'Количество расходника: ' + consumable.getAmount()}">user</a>  <br/>
   </div>
   <br/>
+  <form action="/consumables/updateConsumables">
+    <input type="hidden" name="id" th:value="${supplier.getConsumables().get(0).getId()}"/>
+    <input type="submit" value="Редактировать количество"/>
+  </form>
+  <br/>
+  <br/>
   <br/>
 </div>
+<a href="/suppliers/newSupplier">Добавить поставщика</a>
 <br/>
 <br/>
 <a href="/cardsMarket">Вернуться</a>

@@ -2,6 +2,7 @@ package com.example.Business.cards.services;
 
 import com.example.Business.cards.models.Consumable;
 import com.example.Business.cards.models.Supplier;
+import com.example.Business.cards.models.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -37,11 +38,27 @@ public class SuppliersService {
                 "SELECT * FROM Consumable where supplier_id = ?",
                 (resultSet, rowNum) -> {
                     Consumable consumable = new Consumable();
-
+                    consumable.setId(resultSet.getInt("id"));
                     consumable.setAmount(resultSet.getInt("amount"));
                     consumable.setType(resultSet.getString("type"));
                     return consumable;
                 }, id);
         return consumables;
+    }
+
+    public int findIdByOrgName(String orgName){
+        Supplier suppliersMain = this.jdbcTemplate.queryForObject(
+                "SELECT id FROM Supplier WHERE organizationName = ?",
+                (resultSet, rowNum) -> {
+                    Supplier supplier = new Supplier();
+                    supplier.setId(resultSet.getInt("id"));
+                    return supplier;
+                }, orgName);
+
+        return suppliersMain.getId();
+    }
+
+    public void save(Supplier supplier){
+        this.jdbcTemplate.update("INSERT INTO Supplier (organizationName) values (?)", supplier.getOrganizationName());
     }
 }

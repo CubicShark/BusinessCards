@@ -70,46 +70,18 @@
 
 <form th:method="POST" th:action="@{/workers/newWorker}" th:object="${worker}">
 
-  <label for="cardsAmount">Введите количество визиток: </label>
-  <input type="text" th:field="*{cardsAmount}" id="cardsAmount"/>
-  <div style="color:red" th:if="${#fields.hasErrors('cardsAmount')}" th:errors="*{cardsAmount}">Error </div>
+  <label for="fullName">Введите имя: </label>
+  <input type="text" th:field="*{fullName}" id="fullName"/>
+  <div style="color:red" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}">Error </div>
   <br/>
 
-  <label for="text">Введите текст: </label>
-  <input type="text" th:field="*{text}" id="text"/>
-  <div style="color:red" th:if="${#fields.hasErrors('text')}" th:errors="*{text}">Error </div>
-  <br/>
-
-  <a>Выберите шрифт :</a>
-  <label>
-    <select name="font">
-      <option th:each=" design : ${designs}" th:value="${design.getFont()}" th:text="${design.getFont() + ', ' +design.getLetterHeight()}">
-      </option>
-    </select>
-  </label>
-  <br/>
-
-  <a>Выберите работника :</a>
-  <label>
-    <select name="workerName">
-      <option th:each=" worker : ${workers}" th:value="${worker.getFullName()}" th:text="${worker.getFullName()}">
-      </option>
-    </select>
-  </label>
-  <br/>
-
-
-  <label for="customerName">Введите имя заказчика:</label>
-  <input type="text" id="customerName" name="customerName"><br>
-
-
-  <label for="customerPhoneNumber">Введите номер телефона заказчика:</label>
-  <input type="text" id="customerPhoneNumber" name="customerPhoneNumber"><br>
-
-
+  <label for="phoneNumber">Введите номер телефона: </label>
+  <input type="text" th:field="*{phoneNumber}" id="phoneNumber"/>
+  <div style="color:red" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}">Error </div>
   <br/>
   <br/>
-  <input type="submit" value="Cоздать заказ"/>
+  <br/>
+  <input type="submit" value="Cоздать работника"/>
 </form>
 <br/>
 <br/>
