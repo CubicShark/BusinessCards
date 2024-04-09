@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Динамика выполнения заказов работниками</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<meta charset="UTF-8">
+<body>
+<h1>Динамика выполнения заказов работниками</h1>
+<table>
+    <tr>
+        <th>Worker Name</th>
+        <th>Year 2021</th>
+        <th>Year 2022</th>
+        <th>Year 2023</th>
+        <th>Year 2024</th>
+        <th>Total Orders</th>
+    </tr>
+    <div th:each="info : ${reportInfo}">
+        <tr>
+            <td th:text="${info.getWorkerName()}" >Worker 1</td>
+            <td th:text="${info.getReqsDone()[0]}" >10</td>
+            <td th:text="${info.getReqsDone()[1]}" >10</td>
+            <td th:text="${info.getReqsDone()[2]}" >10</td>
+            <td th:text="${info.getReqsDone()[3]}" >10</td>
+            <td th:text="${info.getSum()}" >10</td>
+        </tr>
+    </div>
+
+</table>
+</body>
+</html>
+
+<div th:each="request : ${requests}">
+    <a th:text="${'Номер заказа: ' + request.getId()}">user</a>
+    <br/>
+</div>

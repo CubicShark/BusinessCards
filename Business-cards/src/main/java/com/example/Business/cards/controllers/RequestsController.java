@@ -184,10 +184,10 @@ public class RequestsController {
         return "redirect:/requests/show";
     }
 
-//    @GetMapping("/showAllRequests")
-//    public String showAllRequests(Model model){
-//        model.addAttribute("requests",requestsService.findNotEndedRequestsId());
-//        return "requests/showAllRequests";
-//    }
+    @GetMapping("/orderFulfillmentDynamics")
+    public String orderFulfillmentDynamics(Model model){
+        model.addAttribute("reportInfo",requestsService.orderFulfillmentDynamics());
+        return "requests/orderFulfillmentDynamics";
+    }
 
 }

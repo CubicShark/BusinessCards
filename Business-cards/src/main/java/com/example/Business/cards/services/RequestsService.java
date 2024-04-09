@@ -200,7 +200,45 @@ public class RequestsService {
     }
 
 
+    public List<RequestYearsReport> orderFulfillmentDynamics() {
+        List<RequestYearsReport> requestYearsReports = this.jdbcTemplate.query(
+                "SELECT\n" +
+                        "    worker_id,\n" +
+                        "    SUM(CASE WHEN startDate >= '2021-01-01' and endDate < '2022-01-01' THEN 1 ELSE 0 END) AS YEAR_2021,\n" +
+                        "    SUM(CASE WHEN startDate >= '2022-01-01' and endDate < '2023-01-01' THEN 1 ELSE 0 END) AS YEAR_2022,\n" +
+                        "    SUM(CASE WHEN startDate >= '2023-01-01' and endDate < '2024-01-01' THEN 1 ELSE 0 END) AS YEAR_2023,\n" +
+                        "    SUM(CASE WHEN startDate >= '2024-01-01' and endDate < '2025-01-01' THEN 1 ELSE 0 END) AS YEAR_2024,\n" +
+                        "    (SUM(CASE WHEN startDate >= '2021-01-01' AND endDate < '2022-01-01' THEN 1 ELSE 0 END) +\n" +
+                        "     SUM(CASE WHEN startDate >= '2022-01-01' AND endDate < '2023-01-01' THEN 1 ELSE 0 END) +\n" +
+                        "     SUM(CASE WHEN startDate >= '2023-01-01' AND endDate < '2024-01-01' THEN 1 ELSE 0 END) +\n" +
+                        "     SUM(CASE WHEN startDate >= '2024-01-01' AND endDate < '2025-01-01' THEN 1 ELSE 0 END)) AS TOTAL_ORDERS\n" +
+                        "FROM Request\n" +
+                        "GROUP BY worker_id;",
+                (resultSet, rowNum) -> {
+                    RequestYearsReport requestYearsReport = new RequestYearsReport();
 
+                    requestYearsReport.setWorkerName(findWorkerNameById(resultSet.getInt("worker_id")));
+
+                    int []reqDone = new int[4];
+                    reqDone[0] = resultSet.getInt("YEAR_2021");
+                    reqDone[1] = resultSet.getInt("YEAR_2022");
+                    reqDone[2] = resultSet.getInt("YEAR_2023");
+                    reqDone[3] = resultSet.getInt("YEAR_2024");
+
+                    requestYearsReport.setReqsDone(reqDone);
+
+                    requestYearsReport.setSum(resultSet.getInt("TOTAL_ORDERS"));
+
+                    return requestYearsReport;
+                });
+        return requestYearsReports;
+    }
+
+    public String findWorkerNameById(int id) {
+        return this.jdbcTemplate.queryForObject(
+                "SELECT fullName FROM Worker where id = ?",
+                (resultSet, rowNum) -> resultSet.getString("fullName"), id);
+    }
 
 
 }

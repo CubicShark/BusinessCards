@@ -55,4 +55,12 @@ public class WorkersService {
     public void update(Worker worker, int id){
         this.jdbcTemplate.update("UPDATE Worker SET fullName = ?, phoneNumber = ? where id = ?",worker.getFullName(),worker.getPhoneNumber(),id);
     }
+
+    public void dropColumnFullName(){
+        this.jdbcTemplate.update("ALTER TABLE Worker DROP COLUMN fullName");
+    }
+
+    public void addColumnEmail(){
+        this.jdbcTemplate.update("ALTER TABLE Worker ADD COLUMN email VARCHAR(100)");
+    }
 }
